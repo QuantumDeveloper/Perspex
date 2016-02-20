@@ -93,15 +93,13 @@ namespace Perspex.Controls.Presenters
 
                 if (fromIndex != -1)
                 {
-                    from = generator.ContainerFromIndex(fromIndex);
+                    from = Containers.FromIndex(fromIndex)?.ContainerControl;
                 }
 
                 if (toIndex != -1)
                 {
                     var item = Items.Cast<object>().ElementAt(toIndex);
-                    to = generator.ContainerFromIndex(toIndex) ??
-                         generator.Materialize(toIndex, new[] { item }, MemberSelector)
-                            .FirstOrDefault()?.ContainerControl;
+                    to = GetOrCreateContainer(toIndex);
 
                     if (to != null)
                     {
@@ -122,8 +120,28 @@ namespace Perspex.Controls.Presenters
                 {
                     Panel.Children.Remove(from);
                     generator.Dematerialize(fromIndex, 1);
+                    ContainerIndex.Remove(fromIndex, 1);
                 }
+            }
+        }
 
+        private IControl GetOrCreateContainer(int index)
+        {
+            var container = Containers.FromIndex(index);
+
+            if (container != null)
+            {
+                return container.ContainerControl;
+            }
+            else
+            {
+                var item = Items.Cast<object>().ElementAt(index);
+                var materialized = ItemContainerGenerator.Materialize(
+                    index, 
+                    new[] { item }, 
+                    MemberSelector);
+                ContainerIndex.Add(materialized);
+                return materialized.First().ContainerControl;
             }
         }
 
