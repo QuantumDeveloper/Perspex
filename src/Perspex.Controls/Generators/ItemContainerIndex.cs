@@ -11,12 +11,25 @@ namespace Perspex.Controls.Generators
     {
         private List<ItemContainer> _containers = new List<ItemContainer>();
 
+        public event EventHandler<ItemContainerEventArgs> Added;
+
+        public event EventHandler<ItemContainerEventArgs> Removed;
+
         public bool IsIndexed => true;
 
         public void Add(IEnumerable<ItemContainer> containers)
-        {
+        {            
+            var list = new List<ItemContainer>();
+            int startingIndex = -1;
+
             foreach (var c in containers)
             {
+                // NASTY HACK HERE
+                if (startingIndex == -1)
+                {
+                    startingIndex = c.Index;
+                }
+
                 while (_containers.Count < c.Index)
                 {
                     _containers.Add(null);
@@ -34,6 +47,13 @@ namespace Perspex.Controls.Generators
                 {
                     throw new InvalidOperationException("Container already created.");
                 }
+
+                list.Add(c);
+            }
+
+            if (startingIndex != -1)
+            {
+                Added?.Invoke(this, new ItemContainerEventArgs(startingIndex, list));
             }
         }
 
@@ -55,6 +75,8 @@ namespace Perspex.Controls.Generators
                 }
             }
 
+            Removed?.Invoke(this, new ItemContainerEventArgs(index, result));
+
             return result;
         }
 
@@ -62,6 +84,7 @@ namespace Perspex.Controls.Generators
         {
             var result = _containers.GetRange(index, count);
             _containers.RemoveRange(index, count);
+            Removed?.Invoke(this, new ItemContainerEventArgs(index, result));
             return result;
         }
 
@@ -75,12 +98,16 @@ namespace Perspex.Controls.Generators
                 _containers[i] = null;
             }
 
+            Removed?.Invoke(this, new ItemContainerEventArgs(index, result));
+
             return result;
         }
 
         public void Clear()
         {
+            var old = _containers.ToList();
             _containers.Clear();
+            Removed?.Invoke(this, new ItemContainerEventArgs(0, old));
         }
 
         public IControl FromIndex(int index)

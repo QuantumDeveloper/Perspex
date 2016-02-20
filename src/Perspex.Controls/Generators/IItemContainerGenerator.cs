@@ -19,16 +19,6 @@ namespace Perspex.Controls.Generators
         IEnumerable<ItemContainer> Containers { get; }
 
         /// <summary>
-        /// Signalled whenever new containers are materialized.
-        /// </summary>
-        event EventHandler<ItemContainerEventArgs> Materialized;
-
-        /// <summary>
-        /// Event raised whenever containers are dematerialized.
-        /// </summary>
-        event EventHandler<ItemContainerEventArgs> Dematerialized;
-
-        /// <summary>
         /// Creates container controls for a collection of items.
         /// </summary>
         /// <param name="startingIndex">

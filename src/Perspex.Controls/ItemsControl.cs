@@ -63,6 +63,8 @@ namespace Perspex.Controls
         public ItemsControl()
         {
             Containers = new ItemContainerIndex();
+            Containers.Added += (_, e) => OnContainersMaterialized(e);
+            Containers.Removed += (_, e) => OnContainersDematerialized(e);
             PseudoClasses.Add(":empty");
             SubscribeToItems(_items);
         }
@@ -79,12 +81,6 @@ namespace Perspex.Controls
                 if (_itemContainerGenerator == null)
                 {
                     _itemContainerGenerator = CreateItemContainerGenerator();
-
-                    if (_itemContainerGenerator != null)
-                    {
-                        _itemContainerGenerator.Materialized += (_, e) => OnContainersMaterialized(e);
-                        _itemContainerGenerator.Dematerialized += (_, e) => OnContainersDematerialized(e);
-                    }
                 }
 
                 return _itemContainerGenerator;

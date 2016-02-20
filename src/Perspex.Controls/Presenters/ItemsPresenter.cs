@@ -58,8 +58,8 @@ namespace Perspex.Controls.Presenters
                     }
 
                     containers = generator.Materialize(e.NewStartingIndex, e.NewItems, MemberSelector);
-                    AddContainersToPanel(containers);
                     ContainerIndex.Add(containers);
+                    AddContainersToPanel(containers);
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
@@ -91,8 +91,8 @@ namespace Perspex.Controls.Presenters
                     if (Items != null)
                     {
                         containers = generator.Materialize(0, Items, MemberSelector);
-                        AddContainersToPanel(containers);
                         ContainerIndex.Add(containers);
+                        AddContainersToPanel(containers);
                     }
 
                     break;

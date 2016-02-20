@@ -31,12 +31,6 @@ namespace Perspex.Controls.Generators
         /// <inheritdoc/>
         public IEnumerable<ItemContainer> Containers => _containers;
 
-        /// <inheritdoc/>
-        public event EventHandler<ItemContainerEventArgs> Materialized;
-
-        /// <inheritdoc/>
-        public event EventHandler<ItemContainerEventArgs> Dematerialized;
-
         /// <summary>
         /// Gets the owner control.
         /// </summary>
@@ -61,7 +55,6 @@ namespace Perspex.Controls.Generators
             }
 
             AddContainers(result);
-            Materialized?.Invoke(this, new ItemContainerEventArgs(startingIndex, result));
 
             return result.Where(x => x != null).ToList();
         }
@@ -80,8 +73,6 @@ namespace Perspex.Controls.Generators
                 }
             }
 
-            Dematerialized?.Invoke(this, new ItemContainerEventArgs(startingIndex, result));
-
             return result;
         }
 
@@ -96,7 +87,6 @@ namespace Perspex.Controls.Generators
         {
             var result = _containers.GetRange(startingIndex, count);
             _containers.RemoveRange(startingIndex, count);
-            Dematerialized?.Invoke(this, new ItemContainerEventArgs(startingIndex, result));
             return result;
         }
 
@@ -105,12 +95,6 @@ namespace Perspex.Controls.Generators
         {
             var result = _containers;
             _containers = new List<ItemContainer>();
-
-            if (result.Count > 0)
-            {
-                Dematerialized?.Invoke(this, new ItemContainerEventArgs(0, result));
-            }
-
             return result;
         }
 
