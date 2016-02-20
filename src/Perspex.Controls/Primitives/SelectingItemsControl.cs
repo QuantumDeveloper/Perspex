@@ -267,7 +267,7 @@ namespace Perspex.Controls.Primitives
         {
             var item = ((IVisual)eventSource).GetSelfAndVisualAncestors()
                 .OfType<IControl>()
-                .FirstOrDefault(x => x.LogicalParent == this && ItemContainerGenerator?.IndexFromContainer(x) != -1);
+                .FirstOrDefault(x => x.LogicalParent == this && Containers.IndexOf(x) != -1);
 
             return item as IControl;
         }
@@ -419,7 +419,7 @@ namespace Perspex.Controls.Primitives
 
                     if (Presenter?.Panel != null)
                     {
-                        var container = ItemContainerGenerator.ContainerFromIndex(index);
+                        var container = Containers.FromIndex(index)?.ContainerControl;
                         KeyboardNavigation.SetTabOnceActiveElement(
                             (InputElement)Presenter.Panel,
                             container);
@@ -614,7 +614,7 @@ namespace Perspex.Controls.Primitives
         /// <param name="selected">Whether the item should be selected or deselected.</param>
         private void MarkItemSelected(int index, bool selected)
         {
-            var container = ItemContainerGenerator?.ContainerFromIndex(index);
+            var container = Containers.FromIndex(index)?.ContainerControl;
 
             if (container != null)
             {

@@ -137,8 +137,8 @@ namespace Perspex.Controls
 
             if (selectedIndex != -1)
             {
-                var container = ItemContainerGenerator.ContainerFromIndex(selectedIndex);
-                container?.Focus();
+                var container = Containers.FromIndex(selectedIndex);
+                container?.ContainerControl.Focus();
             }
         }
 

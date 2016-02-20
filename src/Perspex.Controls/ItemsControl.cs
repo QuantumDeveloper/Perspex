@@ -62,9 +62,12 @@ namespace Perspex.Controls
         /// </summary>
         public ItemsControl()
         {
+            Containers = new ItemContainerIndex();
             PseudoClasses.Add(":empty");
             SubscribeToItems(_items);
         }
+
+        public IItemContainers Containers { get; }
 
         /// <summary>
         /// Gets the <see cref="IItemContainerGenerator"/> for the control.

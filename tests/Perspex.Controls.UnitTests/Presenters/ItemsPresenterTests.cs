@@ -88,7 +88,7 @@ namespace Perspex.Controls.UnitTests.Presenters
 
             Assert.Equal(1, target.Panel.Children.Count);
             Assert.Equal("bar", ((TextBlock)target.Panel.Children[0]).Text);
-            Assert.Equal("bar", ((TextBlock)target.ItemContainerGenerator.ContainerFromIndex(0)).Text);
+            Assert.Equal("bar", ((TextBlock)target.Containers.FromIndex(0).ContainerControl).Text);
         }
 
         [Fact]
@@ -197,17 +197,17 @@ namespace Perspex.Controls.UnitTests.Presenters
             var text = target.Panel.Children.Cast<TextBlock>().Select(x => x.Text).ToList();
 
             Assert.Equal(new[] { "foo", "bar" }, text);
-            Assert.NotNull(target.ItemContainerGenerator.ContainerFromIndex(0));
-            Assert.Null(target.ItemContainerGenerator.ContainerFromIndex(1));
-            Assert.NotNull(target.ItemContainerGenerator.ContainerFromIndex(2));
+            Assert.NotNull(target.Containers.FromIndex(0).ContainerControl);
+            Assert.Null(target.Containers.FromIndex(1).ContainerControl);
+            Assert.NotNull(target.Containers.FromIndex(2).ContainerControl);
 
             items.RemoveAt(1);
 
             text = target.Panel.Children.Cast<TextBlock>().Select(x => x.Text).ToList();
 
             Assert.Equal(new[] { "foo", "bar" }, text);
-            Assert.NotNull(target.ItemContainerGenerator.ContainerFromIndex(0));
-            Assert.NotNull(target.ItemContainerGenerator.ContainerFromIndex(1));
+            Assert.NotNull(target.Containers.FromIndex(0).ContainerControl);
+            Assert.NotNull(target.Containers.FromIndex(1).ContainerControl);
         }
 
         [Fact]

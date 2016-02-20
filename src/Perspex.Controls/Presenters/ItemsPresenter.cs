@@ -39,6 +39,7 @@ namespace Perspex.Controls.Presenters
         private IEnumerable _items;
         private bool _createdPanel;
         private IItemContainerGenerator _generator;
+        private IItemContainerIndex _containerIndex;
 
         /// <summary>
         /// Initializes static members of the <see cref="ItemsPresenter"/> class.
@@ -58,6 +59,8 @@ namespace Perspex.Controls.Presenters
         public ItemsPresenter()
         {
         }
+
+        public IItemContainers Containers => ContainerIndex;
 
         /// <summary>
         /// Gets the <see cref="IItemContainerGenerator"/> used to generate item container
@@ -132,6 +135,20 @@ namespace Perspex.Controls.Presenters
             }
         }
 
+        public IItemContainerIndex ContainerIndex
+        {
+            get
+            {
+                if (_containerIndex == null)
+                {
+                    var i = TemplatedParent as ItemsControl;
+                    _containerIndex = ((IItemContainerIndex)i?.Containers) ?? new ItemContainerIndex();
+                }
+
+                return _containerIndex;
+            }
+        }
+
         /// <inheritdoc/>
         protected override Size MeasureOverride(Size availableSize)
         {
@@ -182,7 +199,9 @@ namespace Perspex.Controls.Presenters
         {
             if (items != null)
             {
-                AddContainers(ItemContainerGenerator.Materialize(0, Items, MemberSelector));
+                var containers = ItemContainerGenerator.Materialize(0, Items, MemberSelector);
+                AddContainersToPanel(containers);
+                ContainerIndex.Add(containers);
 
                 INotifyCollectionChanged incc = items as INotifyCollectionChanged;
 
@@ -233,6 +252,7 @@ namespace Perspex.Controls.Presenters
             if (_createdPanel)
             {
                 var generator = ItemContainerGenerator;
+                IEnumerable<ItemContainer> containers;
 
                 // TODO: Handle Move and Replace etc.
                 switch (e.Action)
@@ -241,19 +261,24 @@ namespace Perspex.Controls.Presenters
                         if (e.NewStartingIndex + e.NewItems.Count < this.Items.Count())
                         {
                             generator.InsertSpace(e.NewStartingIndex, e.NewItems.Count);
+                            ContainerIndex.InsertSpace(e.NewStartingIndex, e.NewItems.Count);
                         }
 
-                        AddContainers(generator.Materialize(e.NewStartingIndex, e.NewItems, MemberSelector));
+                        containers = generator.Materialize(e.NewStartingIndex, e.NewItems, MemberSelector);
+                        AddContainersToPanel(containers);
+                        ContainerIndex.Add(containers);
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
                         RemoveContainers(generator.RemoveRange(e.OldStartingIndex, e.OldItems.Count));
+                        ContainerIndex.RemoveAndReindex(e.OldStartingIndex, e.OldItems.Count);
                         break;
 
                     case NotifyCollectionChangedAction.Replace:
                         RemoveContainers(generator.Dematerialize(e.OldStartingIndex, e.OldItems.Count));
-                        var containers = generator.Materialize(e.NewStartingIndex, e.NewItems, MemberSelector);
-                        AddContainers(containers);
+                        containers = generator.Materialize(e.NewStartingIndex, e.NewItems, MemberSelector);
+                        ContainerIndex.ClearRange(e.OldStartingIndex, e.OldItems.Count);
+                        AddContainersToPanel(containers);
 
                         var i = e.NewStartingIndex;
 
@@ -268,7 +293,8 @@ namespace Perspex.Controls.Presenters
                         // TODO: Implement Move in a more efficient manner.
                     case NotifyCollectionChangedAction.Reset:
                         RemoveContainers(generator.Clear());
-                        AddContainers(generator.Materialize(0, Items, MemberSelector));
+                        AddContainersToPanel(generator.Materialize(0, Items, MemberSelector));
+                        ContainerIndex.Clear();
                         break;
                 }
 
@@ -281,7 +307,7 @@ namespace Perspex.Controls.Presenters
             (e.NewValue as IItemsPresenterHost)?.RegisterItemsPresenter(this);
         }
 
-        private void AddContainers(IEnumerable<ItemContainer> items)
+        private void AddContainersToPanel(IEnumerable<ItemContainer> items)
         {
             foreach (var i in items)
             {
