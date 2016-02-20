@@ -7,6 +7,7 @@ using Moq;
 using Perspex.Collections;
 using Perspex.Controls.Generators;
 using Perspex.Controls.Presenters;
+using Perspex.Controls.Primitives;
 using Perspex.Controls.Templates;
 using Perspex.Input;
 using Perspex.VisualTree;
@@ -47,14 +48,13 @@ namespace Perspex.Controls.UnitTests.Presenters
         [Fact]
         public void Should_Add_Containers_Of_Correct_Type()
         {
+            var listBox = new ListBox();
             var target = new ItemsPresenter
             {
                 Items = new[] { "foo", "bar" },
+                [TemplatedControl.TemplatedParentProperty] = listBox,
             };
 
-            target.ItemContainerGenerator = new ItemContainerGenerator<ListBoxItem>(
-                target, 
-                ListBoxItem.ContentProperty);
             target.ApplyTemplate();
 
             Assert.Equal(2, target.Panel.Children.Count);
