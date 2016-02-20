@@ -93,7 +93,7 @@ namespace Perspex.Controls.Presenters
 
                 if (fromIndex != -1)
                 {
-                    from = Containers.FromIndex(fromIndex)?.ContainerControl;
+                    from = Containers.FromIndex(fromIndex);
                 }
 
                 if (toIndex != -1)
@@ -131,7 +131,7 @@ namespace Perspex.Controls.Presenters
 
             if (container != null)
             {
-                return container.ContainerControl;
+                return container;
             }
             else
             {

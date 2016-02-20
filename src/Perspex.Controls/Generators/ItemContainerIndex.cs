@@ -83,19 +83,19 @@ namespace Perspex.Controls.Generators
             _containers.Clear();
         }
 
-        public ItemContainer FromIndex(int index)
+        public IControl FromIndex(int index)
         {
             if (index < _containers.Count)
             {
-                return _containers[index];
+                return _containers[index]?.ContainerControl;
             }
 
             return null;
         }
 
-        public ItemContainer FromItem(object item)
+        public IControl FromItem(object item)
         {
-            return _containers.FirstOrDefault(x => x.Item == item);
+            return _containers.FirstOrDefault(x => x.Item == item)?.ContainerControl;
         }
 
         public int IndexOf(IControl container)

@@ -422,7 +422,7 @@ namespace Perspex.Controls
 
             if (selected != -1)
             {
-                var container = Containers.FromIndex(selected)?.ContainerControl;
+                var container = Containers.FromIndex(selected);
                 container?.Focus();
             }
         }

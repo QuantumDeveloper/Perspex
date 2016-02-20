@@ -419,7 +419,7 @@ namespace Perspex.Controls.Primitives
 
                     if (Presenter?.Panel != null)
                     {
-                        var container = Containers.FromIndex(index)?.ContainerControl;
+                        var container = Containers.FromIndex(index);
                         KeyboardNavigation.SetTabOnceActiveElement(
                             (InputElement)Presenter.Panel,
                             container);
@@ -614,7 +614,7 @@ namespace Perspex.Controls.Primitives
         /// <param name="selected">Whether the item should be selected or deselected.</param>
         private void MarkItemSelected(int index, bool selected)
         {
-            var container = Containers.FromIndex(index)?.ContainerControl;
+            var container = Containers.FromIndex(index);
 
             if (container != null)
             {

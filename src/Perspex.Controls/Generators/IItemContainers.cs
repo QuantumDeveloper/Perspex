@@ -7,9 +7,9 @@ namespace Perspex.Controls.Generators
     {
         bool IsIndexed { get; }
 
-        ItemContainer FromIndex(int index);
+        IControl FromIndex(int index);
 
-        ItemContainer FromItem(object item);
+        IControl FromItem(object item);
 
         int IndexOf(IControl container);
     }
